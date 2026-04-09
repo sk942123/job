@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Sahil Kadam – Job Tracker</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh}
+  header{background:linear-gradient(135deg,#1e3a5f,#0ea5e9);padding:28px 32px 22px}
+  header h1{font-size:1.5rem;font-weight:700;color:#fff}
+  header p{font-size:.85rem;color:#bae6fd;margin-top:4px}
+  .stats{display:flex;gap:12px;padding:18px 32px;background:#1e293b;border-bottom:1px solid #334155;flex-wrap:wrap}
+  .stat{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:10px 18px;text-align:center}
+  .stat .n{font-size:1.4rem;font-weight:700;color:#38bdf8}
+  .stat .l{font-size:.7rem;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em}
+  .filters{padding:14px 32px;display:flex;gap:8px;flex-wrap:wrap;background:#1e293b}
+  .filters button{padding:6px 14px;border-radius:20px;border:1px solid #475569;background:transparent;color:#94a3b8;cursor:pointer;font-size:.8rem;transition:all .2s}
+  .filters button.active{background:#0ea5e9;border-color:#0ea5e9;color:#fff}
+  .section{padding:20px 32px}
+  .section-title{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .high .section-title{color:#4ade80}
+  .medium .section-title{color:#fbbf24}
+  .stretch .section-title{color:#f87171}
+  .badge-high{background:#166534;color:#4ade80;border:1px solid #4ade80}
+  .badge-medium{background:#713f12;color:#fbbf24;border:1px solid #fbbf24}
+  .badge-stretch{background:#7f1d1d;color:#f87171;border:1px solid #f87171}
+  .card{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:16px;margin-bottom:10px;transition:border-color .2s}
+  .card:hover{border-color:#0ea5e9}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+  .job-title{font-weight:700;font-size:.95rem;color:#f1f5f9}
+  .company{font-size:.82rem;color:#0ea5e9;margin-top:2px}
+  .score-ring{min-width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9rem;border:2.5px solid}
+  .score-high{border-color:#4ade80;color:#4ade80;background:#052e16}
+  .score-medium{border-color:#fbbf24;color:#fbbf24;background:#1c1208}
+  .score-stretch{border-color:#f87171;color:#f87171;background:#1f0707}
+  .tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+  .tag{background:#0f172a;border:1px solid #475569;border-radius:4px;padding:2px 8px;font-size:.7rem;color:#94a3b8}
+  .card-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:10px;flex-wrap:wrap;gap:8px}
+  .meta{font-size:.74rem;color:#64748b}
+  .apply-btn{background:#0ea5e9;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:.78rem;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;transition:background .2s}
+  .apply-btn:hover{background:#0284c7}
+  .divider{border:none;border-top:1px solid #1e293b;margin:0 32px}
+  .tip-box{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:14px 18px;margin:0 32px 24px;font-size:.82rem;color:#94a3b8;line-height:1.6}
+  .tip-box strong{color:#38bdf8}
+  .hidden{display:none}
+  @media(max-width:600px){.section{padding:14px 14px}.stats{padding:12px 14px}.filters{padding:10px 14px}.tip-box,.divider{margin:0 14px 14px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🎯 Sahil Kadam — Job Application Command Center</h1>
+  <p>Salesforce Developer · 4+ yrs · Mumbai · PD1 &amp; PD2 Certified · Copado · LWC · CI/CD · Experience Cloud</p>
+</header>
+
+<div class="stats">
+  <div class="stat"><div class="n">22</div><div class="l">Total Jobs</div></div>
+  <div class="stat"><div class="n">10</div><div class="l">High Probability</div></div>
+  <div class="stat"><div class="n">8</div><div class="l">Medium Probability</div></div>
+  <div class="stat"><div class="n">4</div><div class="l">Stretch Roles</div></div>
+  <div class="stat"><div class="n">48K–90K</div><div class="l">Salary Range (₹ p.m.)</div></div>
+</div>
+
+<div class="filters">
+  <button class="active" onclick="filter('all',this)">All Roles</button>
+  <button onclick="filter('high',this)">🟢 High Probability</button>
+  <button onclick="filter('medium',this)">🟡 Medium</button>
+  <button onclick="filter('stretch',this)">🔴 Stretch</button>
+  <button onclick="filter('mnc',this)">MNCs</button>
+  <button onclick="filter('startup',this)">Startups</button>
+  <button onclick="filter('consulting',this)">Consulting</button>
+</div>
+
+<div class="tip-box">
+  💡 <strong>Recruiter Tip:</strong> Your Copado Fundamentals I &amp; II + PD1 &amp; PD2 certifications are a rare combo that puts you in the top 10% of Salesforce candidates. Lead with your <strong>CI/CD pipeline expertise</strong> and the <strong>25% operational efficiency improvement</strong> in every application — these are quantifiable wins that stand out.
+</div>
+
+<!-- HIGH PROBABILITY -->
+<div class="section high" id="sec-high">
+  <div class="section-title">🟢 High Probability — Apply Immediately (Best Fit)</div>
+
+  <div class="card" data-cat="high mnc">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Salesforce Developer (Apex, LWC) – Hybrid Senior</div>
+        <div class="company">Salesforce Inc. · Hyderabad</div>
+        <div class="tags">
+          <span class="tag">LWC</span><span class="tag">Apex</span><span class="tag">MuleSoft</span><span class="tag">QA Automation</span><span class="tag">CI/CD</span>
+        </div>
+      </div>
+      <div class="score-ring score-high">92</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Posted: Apr 6, 2026 · Full Time · Hybrid</span>
+      <a class="apply-btn" href="https://careers.salesforce.com/en/jobs/jr336689/salesforce-developer-apex-lwc/" target="_blank">Apply Now →</a>
+    </div>
+  </div>
+
+  <div class="card" data-cat="high consulting">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Salesforce Developer (4–9 yrs)</div>
+        <div class="company">Deloitte India · Pune / Hyderabad / Mumbai</div>
+        <div class="tags">
+          <span class="tag">Apex</span><span class="tag">LWC</span><span class="tag">Lightning</span><span class="tag">Visualforce</span><span class="tag">SOQL</span>
+        </div>
+      </div>
+      <div class="score-ring score-high">90</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Active · Multiple Openings · Big 4</span>
+      <a class="apply-btn" href="https://apply.deloitte.com/careers/SearchJobs/salesforce?3_90_3=6020" target="_blank">Apply Now →</a>
+    </div>
+  </div>
+
+  <div class="card" data-cat="high mnc">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Salesforce Engineer</div>
+        <div class="company">Barclays India · Pune / Bangalore</div>
+        <div class="tags">
+          <span class="tag">Apex</span><span class="tag">LWC</span><span class="tag">DevOps</span><span class="tag">BFSI Domain</span>
+        </div>
+      </div>
+      <div class="score-ring score-high">88</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Active · BFSI Sector · Strong brand</span>
+      <a class="apply-btn" href="https://search.jobs.barclays/job/pune/salesforce-engineer/13015/77219571584" target="_blank">Apply Now →</a>
+    </div>
+  </div>
+
+  <div class="card" data-cat="high mnc">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Salesforce Developer – Senior Engineer</div>
+        <div class="company">CrowdStrike India · Bangalore (Remote)</div>
+        <div class="tags">
+          <span class="tag">CI/CD</span><span class="tag">Order-to-Cash</span><span class="tag">Salesforce</span><span class="tag">Agile</span>
+        </div>
+      </div>
+      <div class="score-ring score-high">86</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Active · Cybersecurity MNC · Remote-friendly</span>
+      <a class="apply-btn" href="https://www.glassdoor.co.in/Job/salesforce-developer-jobs-SRCH_KO0,20.htm" target="_blank">Apply via Glassdoor →</a>
+    </div>
+  </div>
+
+  <div class="card" data-cat="high mnc">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Senior Salesforce Application Developer – Sales Cloud</div>
+        <div class="company">Procore Technologies · Pune</div>
+        <div class="tags">
+          <span class="tag">Copado</span><span class="tag">Git</span><span class="tag">CI/CD</span><span class="tag">PD1 Required</span><span class="tag">Sales Cloud</span>
+        </div>
+      </div>
+      <div class="score-ring score-high">91</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Active · Construction SaaS · Hybrid, Pune</span>
+      <a class="apply-btn" href="https://careers.procore.com/jobs/senior-salesforce-application-developer-sales-cloud-pune-maharashtra-india-a87b778f-77d6-4b01-b11c-fda35785e816" target="_blank">Apply Now →</a>
+    </div>
+  </div>
+
+  <div class="card" data-cat="high consulting">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Salesforce Developer / Consultant</div>
+        <div class="company">Accenture India · Bangalore / Mumbai / Pune</div>
+        <div class="tags">
+          <span class="tag">Apex</span><span class="tag">LWC</span><span class="tag">Integration</span><span class="tag">REST/SOAP</span><span class="tag">Experience Cloud</span>
+        </div>
+      </div>
+      <div class="score-ring score-high">89</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Active · Large Scale Projects · Multiple openings</span>
+      <a class="apply-btn" href="https://www.accenture.com/in-en/careers/jobsearch?jk=salesforce+developer" target="_blank">Apply Now →</a>
+    </div>
+  </div>
+
+  <div class="card" data-cat="high mnc">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Salesforce Developer</div>
+        <div class="company">IBM India · Bangalore / Mumbai</div>
+        <div class="tags">
+          <span class="tag">Apex</span><span class="tag">LWC</span><span class="tag">API Integration</span><span class="tag">Enterprise</span>
+        </div>
+      </div>
+      <div class="score-ring score-high">87</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Active · Consulting + Product · MNC</span>
+      <a class="apply-btn" href="https://www.ibm.com/in-en/employment/india/?q=salesforce" target="_blank">Apply Now →</a>
+    </div>
+  </div>
+
+  <div class="card" data-cat="high consulting">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Salesforce Developer (Senior Associate)</div>
+        <div class="company">KPMG India · Pune / Bangalore (4–7 yrs)</div>
+        <div class="tags">
+          <span class="tag">Advisory</span><span class="tag">Salesforce</span><span class="tag">CI/CD</span><span class="tag">SOAP</span><span class="tag">Data Management</span>
+        </div>
+      </div>
+      <div class="score-ring score-high">85</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Posted recently · Big 4 · Active</span>
+      <a class="apply-btn" href="https://www.foundit.in/search/salesforce-developer-jobs" target="_blank">Apply via Foundit →</a>
+    </div>
+  </div>
+
+  <div class="card" data-cat="high startup">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Salesforce Developer</div>
+        <div class="company">Razorpay · Bangalore</div>
+        <div class="tags">
+          <span class="tag">Fintech</span><span class="tag">Salesforce</span><span class="tag">API-first</span><span class="tag">Scale-up</span>
+        </div>
+      </div>
+      <div class="score-ring score-high">84</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Active · Top Fintech Unicorn · Hiring Now</span>
+      <a class="apply-btn" href="https://razorpay.com/jobs/?query=salesforce" target="_blank">Apply Now →</a>
+    </div>
+  </div>
+
+  <div class="card" data-cat="high mnc">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Salesforce Developer (5–7 yrs)</div>
+        <div class="company">NTT Data India · Bangalore</div>
+        <div class="tags">
+          <span class="tag">LWC</span><span class="tag">Apex</span><span class="tag">DevOps</span><span class="tag">Agile</span>
+        </div>
+      </div>
+      <div class="score-ring score-high">83</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Active · IT Services · Early Applicant Advantage</span>
+      <a class="apply-btn" href="https://www.foundit.in/search/salesforce-developer-jobs" target="_blank">Apply via Foundit →</a>
+    </div>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<!-- MEDIUM PROBABILITY -->
+<div class="section medium" id="sec-medium">
+  <div class="section-title">🟡 Medium Probability — Strong Fit, Worth Pursuing</div>
+
+  <div class="card" data-cat="medium mnc">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Salesforce Developer – Revenue Cloud / CPQ</div>
+        <div class="company">S&amp;P Global Market Intelligence · Hyderabad / Pune</div>
+        <div class="tags">
+          <span class="tag">CPQ</span><span class="tag">Revenue Cloud</span><span class="tag">Apex</span><span class="tag">LWC</span>
+        </div>
+      </div>
+      <div class="score-ring score-medium">78</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Active · Needs CPQ upskill · BFSI/Analytics MNC</span>
+      <a class="apply-btn" href="https://careers.spglobal.com/jobs?q=salesforce" target="_blank">Apply Now →</a>
+    </div>
+  </div>
+
+  <div class="card" data-cat="medium mnc">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Salesforce Developer</div>
+        <div class="company">Capgemini India · Mumbai / Bangalore / Pune</div>
+        <div class="tags">
+          <span class="tag">Enterprise CRM</span><span class="tag">Apex</span><span class="tag">LWC</span><span class="tag">CI/CD</span>
+        </div>
+      </div>
+      <div class="score-ring score-medium">80</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Active · Large Projects · Multiple cities</span>
+      <a class="apply-btn" href="https://www.capgemini.com/in-en/careers/job-search/?q=salesforce+developer" target="_blank">Apply Now →</a>
+    </div>
+  </div>
+
+  <div class="card" data-cat="medium mnc">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Salesforce Vlocity / OmniStudio Developer</div>
+        <div class="company">Concentrix India · Remote / Bangalore</div>
+        <div class="tags">
+          <span class="tag">OmniStudio</span><span class="tag">Vlocity</span><span class="tag">LWC</span><span class="tag">Apex</span>
+        </div>
+      </div>
+      <div class="score-ring score-medium">72</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Active · Needs OmniStudio learning · Remote</span>
+      <a class="apply-btn" href="https://jobs.concentrix.com/job/search?q=salesforce" target="_blank">Apply Now →</a>
+    </div>
+  </div>
+
+  <div class="card" data-cat="medium consulting">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Salesforce CRM Developer / Functional Analyst</div>
+        <div class="company">Nagarro India · Remote / Pan-India</div>
+        <div class="tags">
+          <span class="tag">CRM</span><span class="tag">Salesforce</span><span class="tag">Functional</span><span class="tag">Digital Product</span>
+        </div>
+      </div>
+      <div class="score-ring score-medium">76</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Active · Product Engineering Co. · Remote-first</span>
+      <a class="apply-btn" href="https://www.nagarro.com/en/careers?search=salesforce" target="_blank">Apply Now →</a>
+    </div>
+  </div>
+
+  <div class="card" data-cat="medium mnc">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Salesforce Developer – Field Service Cloud</div>
+        <div class="company">Autodesk India · Pune / Bangalore</div>
+        <div class="tags">
+          <span class="tag">Field Service</span><span class="tag">LWC</span><span class="tag">Apex</span><span class="tag">Integration</span>
+        </div>
+      </div>
+      <div class="score-ring score-medium">75</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Active · SaaS MNC · Needs FSL exposure</span>
+      <a class="apply-btn" href="https://autodesk.wd1.myworkdayjobs.com/Ext/jobs?q=salesforce" target="_blank">Apply Now →</a>
+    </div>
+  </div>
+
+  <div class="card" data-cat="medium startup">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Salesforce Developer – Agentforce &amp; AI CRM</div>
+        <div class="company">Credit Saison India · Bangalore</div>
+        <div class="tags">
+          <span class="tag">Agentforce</span><span class="tag">Sales Cloud</span><span class="tag">Service Cloud</span><span class="tag">Data Cloud</span>
+        </div>
+      </div>
+      <div class="score-ring score-medium">74</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Active · Fintech Scale-up · AI-focused</span>
+      <a class="apply-btn" href="https://in.indeed.com/q-full-time-salesforce-lwc-developer-jobs.html" target="_blank">Apply via Indeed →</a>
+    </div>
+  </div>
+
+  <div class="card" data-cat="medium mnc">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Salesforce Developer (5–7 yrs)</div>
+        <div class="company">TEKsystems India · Pan-India / Remote</div>
+        <div class="tags">
+          <span class="tag">Staffing</span><span class="tag">Client Deployment</span><span class="tag">Apex</span><span class="tag">LWC</span>
+        </div>
+      </div>
+      <div class="score-ring score-medium">77</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Active · IT Staffing · Multiple clients</span>
+      <a class="apply-btn" href="https://www.teksystems.com/en/careers/jobs?q=salesforce+developer&l=India" target="_blank">Apply Now →</a>
+    </div>
+  </div>
+
+  <div class="card" data-cat="medium mnc">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Salesforce Developer – Healthcare CRM</div>
+        <div class="company">Athenahealth India · Chennai / Bangalore</div>
+        <div class="tags">
+          <span class="tag">Healthcare IT</span><span class="tag">Salesforce</span><span class="tag">Integration</span><span class="tag">Non-tech sector</span>
+        </div>
+      </div>
+      <div class="score-ring score-medium">73</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Active · Healthcare domain exposure required</span>
+      <a class="apply-btn" href="https://careers.athenahealth.com/search-jobs?q=salesforce" target="_blank">Apply Now →</a>
+    </div>
+  </div>
+</div>
+
+<hr class="divider"/>
+
+<!-- STRETCH ROLES -->
+<div class="section stretch" id="sec-stretch">
+  <div class="section-title">🔴 Stretch Roles — Ambitious but Achievable with Positioning</div>
+
+  <div class="card" data-cat="stretch mnc">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Salesforce Developer (LMTS) – Lead Engineer</div>
+        <div class="company">Salesforce Inc. · Hyderabad (10+ yrs req.)</div>
+        <div class="tags">
+          <span class="tag">MuleSoft</span><span class="tag">Agentforce</span><span class="tag">Apex</span><span class="tag">LWC</span><span class="tag">Leadership</span>
+        </div>
+      </div>
+      <div class="score-ring score-stretch">62</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Needs 10 yrs exp · Worth applying with strong portfolio</span>
+      <a class="apply-btn" href="https://careers.salesforce.com/en/jobs/jr334272/salesforce-developer-software-engineering-lmts/" target="_blank">Apply Now →</a>
+    </div>
+  </div>
+
+  <div class="card" data-cat="stretch mnc">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Salesforce Functional Architect</div>
+        <div class="company">PwC India / EY India · Bangalore / Mumbai</div>
+        <div class="tags">
+          <span class="tag">Architecture</span><span class="tag">Pre-sales</span><span class="tag">Client Mgmt</span><span class="tag">Salesforce</span>
+        </div>
+      </div>
+      <div class="score-ring score-stretch">60</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Typically 8+ yrs · Positioning as dev-to-architect transition</span>
+      <a class="apply-btn" href="https://www.pwc.in/careers/jobs.html?q=salesforce" target="_blank">Apply Now →</a>
+    </div>
+  </div>
+
+  <div class="card" data-cat="stretch mnc">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Salesforce DevOps Engineer</div>
+        <div class="company">Various MNCs / Edwards Lifesciences India</div>
+        <div class="tags">
+          <span class="tag">Copado</span><span class="tag">GitHub Actions</span><span class="tag">DevOps-first</span><span class="tag">SalesforceDX</span>
+        </div>
+      </div>
+      <div class="score-ring score-stretch">68</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Copado certs = strong differentiator · Niche role</span>
+      <a class="apply-btn" href="https://www.linkedin.com/jobs/search/?keywords=salesforce+devops+engineer&location=India" target="_blank">Apply via LinkedIn →</a>
+    </div>
+  </div>
+
+  <div class="card" data-cat="stretch startup">
+    <div class="card-top">
+      <div>
+        <div class="job-title">Technical Business Analyst – CRM &amp; Integration</div>
+        <div class="company">Product Startups / Scale-ups (Multiple)</div>
+        <div class="tags">
+          <span class="tag">BA + Dev Hybrid</span><span class="tag">Jira</span><span class="tag">Salesforce</span><span class="tag">SQL</span><span class="tag">Analytics</span>
+        </div>
+      </div>
+      <div class="score-ring score-stretch">65</div>
+    </div>
+    <div class="card-bottom">
+      <span class="meta">Lateral move · High pay · Business-facing role</span>
+      <a class="apply-btn" href="https://wellfound.com/role/l/salesforce-developer/india" target="_blank">Explore on Wellfound →</a>
+    </div>
+  </div>
+</div>
+
+<div class="tip-box" style="margin-top:8px">
+  📋 <strong>Application Strategy:</strong> 
+  Apply to all High Probability roles this week. Use Naukri, LinkedIn, and direct career portals simultaneously. 
+  Tailor your resume headline to include <em>"PD1 &amp; PD2 | Copado Certified | LWC | CI/CD | Experience Cloud"</em> — this matches ATS filters at 80%+ of listed companies. 
+  For stretch roles, lead with your team leadership (5-member team) and quantified business outcomes (25% efficiency, 30% perf improvement).
+</div>
+
+<script>
+function filter(cat, btn){
+  document.querySelectorAll('.filters button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.card').forEach(c=>{
+    if(cat==='all'){c.classList.remove('hidden');return;}
+    c.dataset.cat&&c.dataset.cat.includes(cat)?c.classList.remove('hidden'):c.classList.add('hidden');
+  });
+  // show/hide section headers based on visible cards
+  ['high','medium','stretch'].forEach(s=>{
+    const sec=document.getElementById('sec-'+s);
+    if(!sec)return;
+    const visible=[...sec.querySelectorAll('.card')].some(c=>!c.classList.contains('hidden'));
+    sec.style.display=visible?'':'none';
+  });
+}
+</script>
+</body>
+</html>
